@@ -7,8 +7,15 @@ var mongoose = require('mongoose'),
      See also https://scotch.io/tutorials/using-mongoosejs-in-node-js-and-mongodb-applications
   */
 var listingSchema = new Schema({
-  /* Your code for a schema here */ 
-  //Check out - https://mongoosejs.com/docs/guide.html
+  code : {type: String, required: true, unique: true}, // All buildings must have unique codes
+  name : {type: String, required: true}, // Im assuming they could share a common name
+  coordinates : {
+    latitude : Number,
+    longitude: Number
+  },
+  address : String,
+  updated_at : Date,
+  created_at : Date
 
 });
 
@@ -16,7 +23,13 @@ var listingSchema = new Schema({
    See https://scotch.io/tutorials/using-mongoosejs-in-node-js-and-mongodb-applications
 */
 listingSchema.pre('save', function(next) {
-  /* your code here */
+  var updatedDate = new Date(); // Pulls the current date
+  this.updated_at = updatedDate;
+
+  if(!this.created_at) // If created at is not defined then it was created in this instance
+    this.created_at = updatedDate;
+
+  next();
 });
 
 /* Use your schema to instantiate a Mongoose model */
